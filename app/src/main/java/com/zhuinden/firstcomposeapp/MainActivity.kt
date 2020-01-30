@@ -67,9 +67,9 @@ val KeyAmbient = Ambient.of<ComposeKey>()
 
 @Composable
 fun Greeting(name: String) {
-    val key = +ambient(KeyAmbient)
-    val backstack = +ambient(BackstackAmbient)
-    val context = +ambient(ContextAmbient)
+    val key = ambient(KeyAmbient)
+    val backstack = ambient(BackstackAmbient)
+    val context = ambient(ContextAmbient)
 
     Container {
         Button("Hello $name", onClick = {
