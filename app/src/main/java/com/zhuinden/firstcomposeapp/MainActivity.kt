@@ -19,6 +19,20 @@ import java.util.*
 @Model
 class BackstackState(var screens: List<ComposeKey>)
 
+data class FirstKey(val name: String) : ComposeKey() {
+    @Composable
+    override fun realComposable() {
+        Greeting(name = name)
+    }
+}
+
+data class SecondKey(val name: String) : ComposeKey() {
+    @Composable
+    override fun realComposable() {
+        Greeting(name = name)
+    }
+}
+
 class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private lateinit var backstack: Backstack
 
@@ -34,6 +48,7 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
         backstack = Navigator.configure()
             .setStateChanger(SimpleStateChanger(this))
             .setDeferredInitialization(true)
+            .setKeyParceler(GsonParceler())
             .install(this, contentView, History.of(FirstKey("FIRST VIEW")))
 
         setContent {
