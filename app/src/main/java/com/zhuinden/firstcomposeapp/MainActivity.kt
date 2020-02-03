@@ -19,17 +19,17 @@ import java.util.*
 @Model
 class BackstackState(var screens: List<ComposeKey>)
 
-data class FirstKey(val name: String) : ComposeKey() {
+data class FirstKey(private val placeholder: String = "") : ComposeKey() {
     @Composable
     override fun realComposable() {
-        Greeting(name = name)
+        FirstScreen()
     }
 }
 
-data class SecondKey(val name: String) : ComposeKey() {
+data class SecondKey(private val placeholder: String = "") : ComposeKey() {
     @Composable
     override fun realComposable() {
-        Greeting(name = name)
+        SecondScreen()
     }
 }
 
@@ -81,19 +81,27 @@ val BackstackAmbient = Ambient.of<Backstack>()
 val KeyAmbient = Ambient.of<ComposeKey>()
 
 @Composable
-fun Greeting(name: String) {
-    val key = ambient(KeyAmbient)
+fun FirstScreen() {
+    val key = ambient(KeyAmbient) // params? or function args instead
+
     val backstack = ambient(BackstackAmbient)
+
+    Container {
+        Button("Hello First Screen!", onClick = {
+            // onClick is not a composition context, must get ambients above
+            backstack.goTo(SecondKey())
+        })
+    }
+}
+
+@Composable
+fun SecondScreen() {
     val context = ambient(ContextAmbient)
 
     Container {
-        Button("Hello $name", onClick = {
+        Button("Hello Second Screen!", onClick = {
             // onClick is not a composition context, must get ambients above
-            if (key is FirstKey) {
-                backstack.goTo(SecondKey("SECOND VIEW"))
-            } else {
-                Toast.makeText(context, "Blah", Toast.LENGTH_LONG).show()
-            }
+            Toast.makeText(context, "Blah", Toast.LENGTH_LONG).show()
         })
     }
 }
@@ -102,6 +110,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        Greeting("Android")
+        FirstScreen()
     }
 }
