@@ -1,16 +1,19 @@
 package com.zhuinden.firstcomposeapp
 
 import android.os.Parcelable
-import androidx.compose.Composable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 
-abstract class ComposeKey {
+abstract class ComposeKey: Parcelable {
     @Composable
     fun composable() {
-        KeyAmbient.Provider(value = this) {
-            realComposable()
+        val key = this
+
+        Providers(KeyAmbient provides(key)) {
+            defineComposable()
         }
     }
 
     @Composable
-    abstract fun realComposable()
+    protected abstract fun defineComposable()
 }
