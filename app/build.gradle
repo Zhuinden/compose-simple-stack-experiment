@@ -59,6 +59,7 @@ dependencies {
     implementation "androidx.ui:ui-tooling:$compose_version"
 
     implementation 'com.github.Zhuinden:simple-stack:2.4.0'
+    implementation 'com.github.Zhuinden:simple-stack-extensions:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     testImplementation 'junit:junit:4.13'

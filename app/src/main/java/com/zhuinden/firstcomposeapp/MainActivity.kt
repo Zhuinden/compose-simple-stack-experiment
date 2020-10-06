@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.setContent
 import androidx.ui.tooling.preview.Preview
 import com.zhuinden.simplestack.*
 import com.zhuinden.simplestack.navigator.Navigator
+import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -48,12 +49,10 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val contentView = window.decorView.findViewById<ViewGroup>(android.R.id.content)
-
         backstack = Navigator.configure()
             .setStateChanger(SimpleStateChanger(this))
             .setDeferredInitialization(true)
-            .install(this, contentView, History.of(FirstKey("FIRST VIEW")))
+            .install(this, androidContentFrame, History.of(FirstKey("FIRST VIEW")))
 
         setContent {
             MaterialTheme {
