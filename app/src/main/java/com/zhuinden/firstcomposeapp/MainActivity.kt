@@ -8,6 +8,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
@@ -24,11 +25,11 @@ import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-data class BackstackState(val screens: List<ComposeKey>)
+data class BackstackState(val stateChange: StateChange?)
 
 @Parcelize
 data class FirstKey(val title: String) : ComposeKey() {
-    constructor(): this("Hello First Screen!")
+    constructor() : this("Hello First Screen!")
 
     @Composable
     override fun defineComposable() {
@@ -47,7 +48,7 @@ data class SecondKey(private val noArgsPlaceholder: String = "") : ComposeKey() 
 class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private lateinit var backstack: Backstack
 
-    private var backstackState by mutableStateOf(BackstackState(Collections.emptyList()))
+    private var backstackState by mutableStateOf(BackstackState(null))
 
     @ExperimentalAnimationApi
     @Suppress("NAME_SHADOWING", "ControlFlowWithEmptyBody")
@@ -56,18 +57,17 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
 
         backstack = Navigator.configure()
             .setStateChanger(SimpleStateChanger(this))
-            .setDeferredInitialization(true)
             .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
-            MaterialTheme {
-                Providers(BackstackAmbient provides(backstack)) {
-                    backstackState.screens.lastOrNull()?.composable()
+            Providers(BackstackAmbient provides (backstack)) {
+                MaterialTheme {
+                    Box(Modifier.fillMaxSize()) {
+                        backstackState.stateChange?.topNewKey<ComposeKey>()?.composable()
+                    }
                 }
             }
         }
-
-        Navigator.executeDeferredInitialization(this)
     }
 
     override fun onBackPressed() {
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     }
 
     override fun onNavigationEvent(stateChange: StateChange) {
-        backstackState = backstackState.copy(screens = stateChange.getNewKeys())
+        backstackState = backstackState.copy(stateChange = stateChange)
     }
 }
 
