@@ -25,33 +25,16 @@ import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-data class BackstackState(val stateChange: StateChange?)
 
-@Parcelize
-data class FirstKey(val title: String) : ComposeKey() {
-    constructor() : this("Hello First Screen!")
+private data class BackstackState(val stateChange: StateChange?)
 
-    @Composable
-    override fun defineComposable() {
-        FirstScreen(title)
-    }
-}
-
-@Parcelize
-data class SecondKey(private val noArgsPlaceholder: String = "") : ComposeKey() {
-    @Composable
-    override fun defineComposable() {
-        SecondScreen()
-    }
-}
+val BackstackAmbient = ambientOf<Backstack>()
 
 class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private lateinit var backstack: Backstack
 
     private var backstackState by mutableStateOf(BackstackState(null))
 
-    @ExperimentalAnimationApi
-    @Suppress("NAME_SHADOWING", "ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,7 +45,7 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
         setContent {
             Providers(BackstackAmbient provides (backstack)) {
                 MaterialTheme {
-                    Box(Modifier.fillMaxSize()) {
+                    Box(Modifier.fillMaxSize(), alignment = Alignment.Center) {
                         backstackState.stateChange?.topNewKey<ComposeKey>()?.composable()
                     }
                 }
@@ -78,51 +61,5 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
 
     override fun onNavigationEvent(stateChange: StateChange) {
         backstackState = backstackState.copy(stateChange = stateChange)
-    }
-}
-
-val BackstackAmbient = ambientOf<Backstack>()
-
-@Composable
-fun FirstScreen(title: String) {
-    val backstack = BackstackAmbient.current
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            // onClick is not a composition context, must get ambients above
-            backstack.goTo(SecondKey())
-        }, content = {
-            Text(title)
-        })
-    }
-}
-
-@Composable
-fun SecondScreen() {
-    val context = ContextAmbient.current
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            // onClick is not a composition context, must get ambients above
-            Toast.makeText(context, "Blah", Toast.LENGTH_LONG).show()
-        }, content = {
-            Text("Hello Second Screen!")
-        })
-    }
-}
-
-@Preview
-@Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        FirstScreen("This is a preview")
     }
 }
