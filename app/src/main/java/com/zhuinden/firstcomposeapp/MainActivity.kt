@@ -26,14 +26,14 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
-private data class BackstackState(val stateChange: StateChange?)
+private data class BackstackState(val stateChange: StateChange? = null)
 
 val BackstackAmbient = ambientOf<Backstack>()
 
 class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private lateinit var backstack: Backstack
 
-    private var backstackState by mutableStateOf(BackstackState(null))
+    private var backstackState by mutableStateOf(BackstackState())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
