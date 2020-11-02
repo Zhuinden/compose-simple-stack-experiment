@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,15 +27,17 @@ import java.util.*
 data class BackstackState(val screens: List<ComposeKey>)
 
 @Parcelize
-data class FirstKey(private val placeholder: String = "") : ComposeKey() {
+data class FirstKey(val title: String) : ComposeKey() {
+    constructor(): this("Hello First Screen!")
+
     @Composable
     override fun defineComposable() {
-        FirstScreen()
+        FirstScreen(title)
     }
 }
 
 @Parcelize
-data class SecondKey(private val placeholder: String = "") : ComposeKey() {
+data class SecondKey(private val noArgsPlaceholder: String = "") : ComposeKey() {
     @Composable
     override fun defineComposable() {
         SecondScreen()
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
 
     private var backstackState by mutableStateOf(BackstackState(Collections.emptyList()))
 
+    @ExperimentalAnimationApi
     @Suppress("NAME_SHADOWING", "ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +57,7 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
         backstack = Navigator.configure()
             .setStateChanger(SimpleStateChanger(this))
             .setDeferredInitialization(true)
-            .install(this, androidContentFrame, History.of(FirstKey("FIRST VIEW")))
+            .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
             MaterialTheme {
@@ -78,20 +83,20 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
 
 val BackstackAmbient = ambientOf<Backstack>()
 
-val KeyAmbient = ambientOf<ComposeKey>()
-
 @Composable
-fun FirstScreen() {
-    val key = KeyAmbient.current // params? or function args instead
-
+fun FirstScreen(title: String) {
     val backstack = BackstackAmbient.current
 
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalGravity = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Button(onClick = {
             // onClick is not a composition context, must get ambients above
             backstack.goTo(SecondKey())
         }, content = {
-            Text("Hello First Screen!")
+            Text(title)
         })
     }
 }
@@ -100,7 +105,11 @@ fun FirstScreen() {
 fun SecondScreen() {
     val context = ContextAmbient.current
 
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalGravity = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Button(onClick = {
             // onClick is not a composition context, must get ambients above
             Toast.makeText(context, "Blah", Toast.LENGTH_LONG).show()
@@ -114,6 +123,6 @@ fun SecondScreen() {
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        FirstScreen()
+        FirstScreen("This is a preview")
     }
 }
