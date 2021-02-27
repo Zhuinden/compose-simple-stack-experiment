@@ -1,6 +1,5 @@
 package com.zhuinden.firstcomposeapp
 
-import android.widget.Toast
 import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class SecondKey(private val noArgsPlaceholder: String = "") : DefaultComposeKey() {
+data class SecondKey(private val noArgsPlaceholder: String = "") : ComposeKey() {
     @Composable
     override fun ScreenComposable() {
         SecondScreen()
@@ -34,7 +33,7 @@ fun SecondScreen() {
     ) {
         Button(onClick = {
             // onClick is not a composition context, must get ambients above
-            Toast.makeText(context, "Blah", Toast.LENGTH_LONG).show()
+            context.showToast("Blah")
         }, content = {
             Text("Hello Second Screen!")
         })

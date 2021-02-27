@@ -20,6 +20,7 @@ import com.zhuinden.simplestackextensions.servicesktx.lookup
 import com.zhuinden.simplestackextensions.servicesktx.rebind
 import kotlinx.parcelize.Parcelize
 import androidx.compose.ui.tooling.preview.Preview
+import com.zhuinden.firstcomposeapp.core.navigation.rememberService
 
 class FirstModel(
     private val backstack: Backstack
@@ -30,15 +31,13 @@ class FirstModel(
 }
 
 @Parcelize
-data class FirstKey(val title: String) : DefaultComposeKey(), DefaultServiceProvider.HasServices {
+data class FirstKey(val title: String) : ComposeKey() {
     constructor() : this("Hello First Screen!")
 
     @Composable
     override fun ScreenComposable() {
         FirstScreen(title)
     }
-
-    override fun getScopeTag(): String = javaClass.name
 
     override fun bindServices(serviceBinder: ServiceBinder) {
         with(serviceBinder) {
@@ -59,9 +58,7 @@ class FirstScreen private constructor() {
         @Composable
         @SuppressLint("ComposableNaming")
         operator fun invoke(title: String) {
-            val backstack = LocalBackstack.current
-
-            val eventHandler = remember { backstack.lookup<ActionHandler>() }
+            val eventHandler = rememberService<ActionHandler>()
 
             Column(
                 modifier = Modifier.fillMaxSize(),

@@ -1,14 +1,14 @@
-package com.zhuinden.firstcomposeapp
+package com.zhuinden.firstcomposeapp.core.navigation
 
-import android.os.Parcelable
 import androidx.compose.runtime.*
 import com.zhuinden.simplestack.Backstack
 import com.zhuinden.simplestack.SimpleStateChanger
 import com.zhuinden.simplestack.StateChange
+import com.zhuinden.simplestackextensions.servicesktx.lookup
 
 val LocalKey = staticCompositionLocalOf<DefaultComposeKey> { throw Exception("Key should not be null") }
 
-abstract class DefaultComposeKey: Parcelable {
+abstract class DefaultComposeKey {
     @Composable
     fun RenderComposable() {
         val key = this
@@ -58,4 +58,11 @@ fun BackstackProvider(backstack: Backstack, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalBackstack provides (backstack)) {
         content()
     }
+}
+
+@Composable
+inline fun <reified T> rememberService(serviceTag: String = T::class.java.name): T {
+    val backstack = LocalBackstack.current
+
+    return remember { backstack.lookup(serviceTag) }
 }
