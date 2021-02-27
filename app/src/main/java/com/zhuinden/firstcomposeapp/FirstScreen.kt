@@ -1,5 +1,6 @@
 package com.zhuinden.firstcomposeapp
 
+import android.annotation.SuppressLint
 import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ class FirstScreen private constructor() {
 
     companion object {
         @Composable
+        @SuppressLint("ComposableNaming")
         operator fun invoke(title: String) {
             val backstack = LocalBackstack.current
 
