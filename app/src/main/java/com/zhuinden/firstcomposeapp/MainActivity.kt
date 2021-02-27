@@ -17,39 +17,22 @@ import com.zhuinden.simplestack.navigator.Navigator
 import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 
-
-private data class BackstackState(private val stateChange: StateChange? = null) {
-    @Composable
-    fun RenderScreen() {
-        stateChange?.topNewKey<DefaultComposeKey>()?.RenderComposable()
-    }
-}
-
-val LocalBackstack = staticCompositionLocalOf<Backstack> { throw Exception("Backstack should not be null") }
-
-@Composable
-fun BackstackProvider(backstack: Backstack, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalBackstack provides (backstack)) {
-        content()
-    }
-}
-
-class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
-    private var backstackState by mutableStateOf(BackstackState())
+class MainActivity : AppCompatActivity() {
+    private val composeStack = ComposeStack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val backstack = Navigator.configure()
             .setScopedServices(DefaultServiceProvider())
-            .setStateChanger(SimpleStateChanger(this))
+            .setStateChanger(SimpleStateChanger(composeStack))
             .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
             BackstackProvider(backstack) {
                 MaterialTheme {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        backstackState.RenderScreen()
+                        composeStack.RenderScreen()
                     }
                 }
             }
@@ -60,9 +43,5 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
         if (!Navigator.onBackPressed(this)) {
             super.onBackPressed()
         }
-    }
-
-    override fun onNavigationEvent(stateChange: StateChange) {
-        backstackState = backstackState.copy(stateChange = stateChange)
     }
 }
