@@ -18,28 +18,38 @@ import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 
 
-private data class BackstackState(val stateChange: StateChange? = null)
+private data class BackstackState(private val stateChange: StateChange? = null) {
+    @Composable
+    fun RenderScreen() {
+        stateChange?.topNewKey<DefaultComposeKey>()?.RenderComposable()
+    }
+}
 
 val LocalBackstack = staticCompositionLocalOf<Backstack> { throw Exception("Backstack should not be null") }
 
-class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
-    private lateinit var backstack: Backstack
+@Composable
+fun BackstackProvider(backstack: Backstack, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalBackstack provides (backstack)) {
+        content()
+    }
+}
 
+class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private var backstackState by mutableStateOf(BackstackState())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        backstack = Navigator.configure()
+        val backstack = Navigator.configure()
             .setScopedServices(DefaultServiceProvider())
             .setStateChanger(SimpleStateChanger(this))
             .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
-            CompositionLocalProvider(LocalBackstack provides (backstack)) {
+            BackstackProvider(backstack) {
                 MaterialTheme {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        backstackState.stateChange?.topNewKey<ComposeKey>()?.ScreenComposable()
+                        backstackState.RenderScreen()
                     }
                 }
             }

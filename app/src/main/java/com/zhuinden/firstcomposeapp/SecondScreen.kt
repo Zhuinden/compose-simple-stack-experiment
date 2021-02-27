@@ -16,9 +16,9 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class SecondKey(private val noArgsPlaceholder: String = "") : ComposeKey() {
+data class SecondKey(private val noArgsPlaceholder: String = "") : DefaultComposeKey() {
     @Composable
-    override fun AssociatedComposable() {
+    override fun ScreenComposable() {
         SecondScreen()
     }
 }

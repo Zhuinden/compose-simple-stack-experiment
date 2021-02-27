@@ -30,11 +30,11 @@ class FirstModel(
 }
 
 @Parcelize
-data class FirstKey(val title: String) : ComposeKey(), DefaultServiceProvider.HasServices {
+data class FirstKey(val title: String) : DefaultComposeKey(), DefaultServiceProvider.HasServices {
     constructor() : this("Hello First Screen!")
 
     @Composable
-    override fun AssociatedComposable() {
+    override fun ScreenComposable() {
         FirstScreen(title)
     }
 
