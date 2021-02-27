@@ -33,7 +33,7 @@ data class FirstKey(val title: String) : ComposeKey(), DefaultServiceProvider.Ha
     constructor() : this("Hello First Screen!")
 
     @Composable
-    override fun defineComposable() {
+    override fun AssociatedComposable() {
         FirstScreen(title)
     }
 
@@ -50,14 +50,14 @@ data class FirstKey(val title: String) : ComposeKey(), DefaultServiceProvider.Ha
 }
 
 class FirstScreen private constructor() {
-    interface ActionHandler {
+    fun interface ActionHandler {
         fun doSomething()
     }
 
     companion object {
         @Composable
         operator fun invoke(title: String) {
-            val backstack = AmbientBackstack.current
+            val backstack = LocalBackstack.current
 
             val eventHandler = remember { backstack.lookup<ActionHandler>() }
 

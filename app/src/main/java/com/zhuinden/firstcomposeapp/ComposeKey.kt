@@ -1,22 +1,20 @@
 package com.zhuinden.firstcomposeapp
 
 import android.os.Parcelable
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
-import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.*
 
-val AmbientKey = ambientOf<ComposeKey>()
+val LocalKey = staticCompositionLocalOf<ComposeKey> { throw Exception("Key should not be null") }
 
 abstract class ComposeKey: Parcelable {
     @Composable
-    fun composable() {
+    fun ScreenComposable() {
         val key = this
 
-        Providers(AmbientKey provides(key)) {
-            defineComposable()
+        CompositionLocalProvider(LocalKey provides(key)) {
+            AssociatedComposable()
         }
     }
 
     @Composable
-    protected abstract fun defineComposable()
+    protected abstract fun AssociatedComposable()
 }

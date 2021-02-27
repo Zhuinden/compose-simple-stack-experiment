@@ -1,6 +1,7 @@
 package com.zhuinden.firstcomposeapp
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.setContent
 import com.zhuinden.simplestack.Backstack
 import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.SimpleStateChanger
@@ -20,7 +20,7 @@ import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 
 private data class BackstackState(val stateChange: StateChange? = null)
 
-val AmbientBackstack = ambientOf<Backstack>()
+val LocalBackstack = staticCompositionLocalOf<Backstack> { throw Exception("Backstack should not be null") }
 
 class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
     private lateinit var backstack: Backstack
@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity(), SimpleStateChanger.NavigationHandler {
             .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
-            Providers(AmbientBackstack provides (backstack)) {
+            CompositionLocalProvider(LocalBackstack provides (backstack)) {
                 MaterialTheme {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        backstackState.stateChange?.topNewKey<ComposeKey>()?.composable()
+                        backstackState.stateChange?.topNewKey<ComposeKey>()?.ScreenComposable()
                     }
                 }
             }
