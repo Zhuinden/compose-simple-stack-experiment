@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,13 +31,14 @@ class FirstModel(
     }
 }
 
+@Immutable
 @Parcelize
 data class FirstKey(val title: String) : ComposeKey() {
     constructor() : this("Hello First Screen!")
 
     @Composable
-    override fun ScreenComposable() {
-        FirstScreen(title)
+    override fun ScreenComposable(modifier: Modifier) {
+        FirstScreen(title, modifier)
     }
 
     override fun bindServices(serviceBinder: ServiceBinder) {
@@ -57,11 +59,11 @@ class FirstScreen private constructor() {
     companion object {
         @Composable
         @SuppressLint("ComposableNaming")
-        operator fun invoke(title: String) {
+        operator fun invoke(title: String, modifier: Modifier = Modifier) {
             val eventHandler = rememberService<ActionHandler>()
 
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

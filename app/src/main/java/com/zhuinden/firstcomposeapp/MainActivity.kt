@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.zhuinden.firstcomposeapp.core.navigation.BackstackProvider
 import com.zhuinden.firstcomposeapp.core.navigation.ComposeStack
+import com.zhuinden.simplestack.AsyncStateChanger
 import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.SimpleStateChanger
 import com.zhuinden.simplestack.navigator.Navigator
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         val backstack = Navigator.configure()
             .setScopedServices(DefaultServiceProvider())
-            .setStateChanger(SimpleStateChanger(composeStack))
+            .setStateChanger(AsyncStateChanger(composeStack))
             .install(this, androidContentFrame, History.of(FirstKey()))
 
         setContent {
