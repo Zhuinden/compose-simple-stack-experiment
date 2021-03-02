@@ -10,14 +10,11 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.zhuinden.simplestack.Backstack
 import com.zhuinden.simplestack.ServiceBinder
-import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 import com.zhuinden.simplestackextensions.servicesktx.add
-import com.zhuinden.simplestackextensions.servicesktx.lookup
 import com.zhuinden.simplestackextensions.servicesktx.rebind
 import kotlinx.parcelize.Parcelize
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +23,7 @@ import com.zhuinden.firstcomposeapp.core.navigation.rememberService
 class FirstModel(
     private val backstack: Backstack
 ): FirstScreen.ActionHandler {
-    override fun doSomething() {
+    override fun navigateToSecond() {
         backstack.goTo(SecondKey())
     }
 }
@@ -53,7 +50,7 @@ data class FirstKey(val title: String) : ComposeKey() {
 
 class FirstScreen private constructor() {
     fun interface ActionHandler {
-        fun doSomething()
+        fun navigateToSecond()
     }
 
     companion object {
@@ -69,7 +66,7 @@ class FirstScreen private constructor() {
             ) {
                 Button(onClick = {
                     // onClick is not a composition context, must get ambients above
-                    eventHandler.doSomething()
+                    eventHandler.navigateToSecond()
                 }, content = {
                     Text(title)
                 })
