@@ -58,6 +58,7 @@ dependencies {
 
     implementation 'com.github.Zhuinden:simple-stack:2.5.0'
     implementation 'com.github.Zhuinden:simple-stack-extensions:2.1.0'
+    implementation 'com.github.Zhuinden:simple-stack-compose-integration:0.1.0'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     testImplementation 'junit:junit:4.13.1'

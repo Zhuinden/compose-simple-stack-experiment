@@ -18,7 +18,7 @@ import com.zhuinden.simplestackextensions.servicesktx.add
 import com.zhuinden.simplestackextensions.servicesktx.rebind
 import kotlinx.parcelize.Parcelize
 import androidx.compose.ui.tooling.preview.Preview
-import com.zhuinden.firstcomposeapp.core.navigation.rememberService
+import com.zhuinden.simplestackcomposeintegration.services.rememberService
 
 class FirstModel(
     private val backstack: Backstack

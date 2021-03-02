@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.zhuinden.firstcomposeapp.core.navigation.BackstackProvider
-import com.zhuinden.firstcomposeapp.core.navigation.ComposeStateChanger
 import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.navigator.Navigator
+import com.zhuinden.simplestackcomposeintegration.core.BackstackProvider
+import com.zhuinden.simplestackcomposeintegration.core.ComposeStateChanger
 import com.zhuinden.simplestackextensions.navigatorktx.androidContentFrame
 import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 
